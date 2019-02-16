@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.dao.ScoreMapper">
+
+	<resultMap type="Score" id="score">
+
+		<id column="scoreid" property="scoreid" />
+		<result column="courseid" property="courseid" />
+		<result column="stuid" property="stuid" />
+		<result column="paperscore" property="paperscore" />
+		<result column="usualscore" property="usualscore" />
+		<result column="allscore" property="allscore" />
+		<association property="course" javaType="Course">
+			<id column="courseid" property="courseid" />
+			<result column="coursename" property="coursename" />
+			<result column="coursescore" property="coursescore" />
+			<result column="courseteacher" property="courseteacher" />
+			<result column="courseteacherid" property="courseteacherid" />
+			<result column="courseday" property="courseday" />
+			<result column="courseday" property="courseday" />
+			<result column="coursetime" property="coursetime" />
+		</association>
+	</resultMap>
+	<select id="findAllScoreByStuid" resultMap="score"
+		parameterType="Long">
+		SELECT * FROM
+		score s
+		INNER JOIN
+		course c
+		WHERE
+		s.stuid=#{id}
+		AND
+		s.courseid = c.courseid
+		AND
+		s.isalter ='1';
+	</select>
+
+	<resultMap type="Score" id="scoreStuMap">
+		<id column="scoreid" property="scoreid" />
+		<result column="paperscore" property="paperscore" />
+		<result column="usualscore" property="usualscore" />
+		<result column="allscore" property="allscore" />
+		<result column="isalter" property="isalter" />
+		<result column="courseid" property="courseid" />
+		<association property="student" javaType="Student">
+			<id column="stuid" property="stuid" />
+			<result column="classesname" property="classesname" />
+			<result column="sname" property="sname" />
+		</association>
+	</resultMap>
+	<select id="selectStuInClass" parameterType="String"
+		resultMap="scoreStuMap">
+		SELECT
+		<!-- s.sname,s.stuid,s.classesname,c.paperscore, c.usualscore ,c.allscore 
+			,c.isalter,c.courseid,c.scoreid -->
+		*
+		FROM
+		student s LEFT JOIN
+		score c ON
+		s.stuid=c.stuid
+		WHERE
+		c.courseid
+		=#{id};
+	</select>
+
+	<resultMap type="Score" id="editScore">
+		<id column="scoreid" property="scoreid" />
+		<result column="paperscore" property="paperscore" />
+		<result column="usualscore" property="usualscore" />
+		<result column="allscore" property="allscore" />
+		<result column="isalter" property="isalter" />
+		<result column="courseid" property="courseid" />
+		<association property="student" javaType="Student">
+			<id column="stuid" property="stuid" />
+			<result column="classesname" property="classesname" />
+			<result column="sname" property="sname" />
+		</association>
+	</resultMap>
+
+	<select id="editScore" parameterType="String"
+		resultMap="editScore">
+		SELECT * FROM score c INNER JOIN student s WHERE c.scoreid =
+		#{id} AND
+		c.stuid=s.stuid;
+	</select>
+
+	<update id="updateScore" parameterType="Score">
+
+		UPDATE score SET
+		paperscore=#{paperscore},
+		usualscore=#{usualscore},allscore=#{allscore} ,isalter='1'
+		WHERE
+		scoreid=#{scoreid};
+	</update>
+
+	<insert id="insertScoreWithAddCourse">
+		INSERT INTO score(scoreid,courseid,stuid,isalter) VALUES
+		<foreach collection="list" separator="," item="list"
+			index="index">
+			(#{list.uuid},#{list.courseid},#{list.stuid},'0')
+		</foreach>
+
+	</insert>
+	<insert id="insertItemInScoreStuSelect" parameterType="QueryVo">
+		insert
+		into score(scoreid,courseid,stuid,isalter) values
+		(#{uuid},#{courseid},#{stuid},'0')
+	</insert>
+
+	<delete id="dropScore" parameterType="QueryVo">
+		delete from score where stuid=#{stuid} and courseid = #{courseid};
+	</delete>
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.dao.CourseMapper">
+	<select id="findCourseList" resultType="Course"
+		parameterType="Long">
+		SELECT * FROM
+		course WHERE
+		courseid IN
+		(SELECT courseid
+		FROM stucourse WHERE studentid =#{id} )
+		AND isopen ='1' order by
+		courseday,coursetime;
+
+	</select>
+
+	<select id="selectTeacherCourseList" resultType="Course"
+		parameterType="String">
+		select * from course where courseteacherid = #{id};
+
+	</select>
+
+	<insert id="toAddCourse" parameterType="Course">
+
+		INSERT INTO course
+		VALUES(#{courseid},#{coursename},#{coursescore},#{courseteacher},#{courseteacherid},#{courseday},#{coursetime},#{courseyear},#{isopen},#{coursetype});
+	</insert>
+
+	<select id="selectTeacherCourseConflict" parameterType="Course"
+		resultType="Course">
+		select * from course where courseteacherid =
+		#{courseteacherid} and
+		courseday=#{courseday} and
+		coursetime=#{coursetime} and isopen='1';
+	</select>
+
+	<insert id="inserStudentAndCourse">
+		INSERT INTO stucourse(studentid,courseid) VALUES
+		<foreach collection="list" separator="," item="list"
+			index="index">
+			(#{list.stuid},#{list.courseid})
+		</foreach>
+
+
+
+	</insert>
+	<select id="findAllcourseNotCore" resultType="Course">
+		SELECT * FROM
+		course WHERE coursetype='1' AND courseyear=#{year} AND courseid NOT
+		IN(SELECT
+		courseid FROM stucourse WHERE studentid =#{id});
+	</select>
+
+	<insert id="inertItemInStuCourseStuSelect"
+		parameterType="QueryVo">
+
+		insert into stucourse values(#{stuid},#{courseid});
+	</insert>
+
+	<select id="selectCourseSelectedAndisOpen" parameterType="Long" resultType="Course">
+		SELECT * FROM course WHERE courseid IN(SELECT courseid FROM stucourse WHERE
+		studentid = #{stuid}) AND isopen='1' AND coursetype='1';
+	</select>
+	
+	<delete id="dropCourse" parameterType="QueryVo">
+	delete from stucourse where studentid = #{stuid} and courseid = #{courseid};  
+	</delete>
+
+</mapper>

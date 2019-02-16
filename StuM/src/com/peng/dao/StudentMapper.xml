@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.dao.StudentMapper">
+
+	<select id="selectStuByIdAndPwd" parameterType="Student"
+		resultType="Student">
+		select * from student where stuid = #{stuid} and password =
+		#{password}
+	</select>
+
+	<select id="selectStuPwdByStuid" parameterType="Long"
+		resultType="String">
+		select password from student where stuid = #{stuid}
+	</select>
+
+	<update id="updatePwd" parameterType="Student">
+		update student set password
+		= #{password} where stuid = #{stuid}
+
+	</update>
+
+	<select id="selectStudentInClass" parameterType="String"
+		resultType="Student">
+
+		SELECT * FROM student WHERE classes=#{id};
+	</select>
+	
+	<select id="selectStuById" parameterType="Long" resultType="Student">
+	    SELECT * FROM student WHERE stuid = #{id};
+	</select>
+	
+	<update id="updateStudent" parameterType="Student">
+	UPDATE student 
+	SET statu=#{statu},
+	 phone =#{phone}, 
+	 phonetow=#{phonetow},
+	 qq=#{qq},
+	 emil=#{emil},
+	 address=#{address} 
+    WHERE stuid=#{stuid};
+	</update>
+</mapper>

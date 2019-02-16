@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.dao.ClassMapper">
+
+
+	<resultMap type="Classes" id="classes">
+		<id column="cid" property="cid" />
+		<result column="cacademy" property="cacademy" />
+		<result column="cname" property="cname" />
+		<result column="qq" property="qq" />
+		<result column="slogan" property="slogan" />
+		<result column="cyear" property="cyear" />
+		<result column="academyname" property="cacademyname" />
+		<result column="cemil" property="cemil" />
+		<association property="teacher" javaType="Teacher">
+			<id column="tid" property="tid" />
+			<result column="tname" property="tname" />
+			<result column="tacademy" property="tacademy" />
+			<result column="phone" property="phone" />
+			<result column="phonetow" property="phonetow" />
+			<result column="qq" property="qq" />
+			<result column="emil" property="emil" />
+			<result column="password" property="password" />
+			<result column="classes" property="classes" />
+		</association>
+
+	</resultMap>
+	<select id="findClassByid" resultMap="classes"
+		parameterType="String">
+		SELECT * FROM teacher t INNER JOIN classes c ON
+		t.classes=c.cid AND c.cid =#{cid};
+	</select>
+
+	<select id="findClassAlive" resultType="Classes">
+		SELECT * FROM classes WHERE alive = 1;
+
+	</select>
+
+</mapper>
