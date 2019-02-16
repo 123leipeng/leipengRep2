@@ -13,7 +13,7 @@ import com.peng.service.StudentService;
 @Controller
 public class LoginController {
 	@Autowired
-	private StudentService studentService;
+	private StudentService  studentService;
 
 	@RequestMapping("/login/homePage")
 	public String login(Model model, String stuid, String password, HttpSession session) {
